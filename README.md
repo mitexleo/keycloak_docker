@@ -46,47 +46,6 @@ docker-compose up -d
 
 Open a web browser and navigate to `https://auth.yourdomain.com`. You should see the Keycloak welcome page.
 
-## Docker Compose Configuration
-
-The `docker-compose.yml` file defines two services: `postgres` and `keycloak`.
-
-### Postgres Service
-
-- **Image**: `postgres:16.2`
-- **Environment Variables**:
-  - `POSTGRES_DB`: Database name (`keycloak_db`)
-  - `POSTGRES_USER`: Database user (`keycloak_db`)
-  - `POSTGRES_PASSWORD`: Database user password (`keycloak_db_user_password`)
-- **Volumes**: Persistent storage for Postgres data.
-
-### Keycloak Service
-
-- **Image**: `quay.io/keycloak/keycloak:26.0`
-- **Environment Variables**:
-  - `KC_HTTP_ENABLED`: Enable HTTP (`true`)
-  - `KC_HEALTH_ENABLED`: Enable health checks (`true`)
-  - `KEYCLOAK_ADMIN`: Admin username (`admin`)
-  - `KEYCLOAK_ADMIN_PASSWORD`: Admin password (`jFWQYNU9wr6w3wos`)
-  - `KC_DB`: Database type (`postgres`)
-  - `KC_DB_URL`: Database URL (`jdbc:postgresql://postgres/keycloak_db`)
-  - `KC_DB_USERNAME`: Database user (`keycloak_db`)
-  - `KC_DB_PASSWORD`: Database user password (`keycloak_db_user_password`)
-  - `KC_HOSTNAME_STRICT`: Strict hostname checking (`false`)
-  - `KC_PROXY_HEADERS`: Proxy headers (`xforwarded`)
-- **Ports**: Maps port 8080 on the host to port 8080 on the container.
-- **Depends On**: Ensures the Postgres service starts before Keycloak.
-
-## Nginx Configuration
-
-The Nginx configuration file sets up a reverse proxy for Keycloak and handles SSL termination.
-
-### Key Features
-
-- **Server Name**: `auth.yourdomain.com`
-- **Proxy Settings**: Forwards requests to `http://localhost:8080`
-- **SSL Configuration**: Managed by Certbot
-- **Timeout Settings**: Increased buffer sizes and timeouts for larger Keycloak responses
-
 ## License
 
 This project is licensed under the MIT License. See the [LICENSE](LICENSE) file for details.
