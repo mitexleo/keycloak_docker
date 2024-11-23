@@ -1,0 +1,44 @@
+services:
+  postgres:
+    image: postgres:16.2
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    environment:
+      POSTGRES_DB: keycloak_db
+      POSTGRES_USER: keycloak_db
+      POSTGRES_PASSWORD: keycloak_db_user_password
+    networks:
+      - keycloak_network
+
+  keycloak:
+    image: quay.io/keycloak/keycloak:26.0
+    command: start
+    environment:
+     # KC_HOSTNAME_STRICT_BACKCHANNEL: false
+      KC_HTTP_ENABLED: true
+     # KC_HOSTNAME_STRICT_HTTPS: false
+      KC_HEALTH_ENABLED: true
+      KEYCLOAK_ADMIN: admin
+      KEYCLOAK_ADMIN_PASSWORD: {Enter Pass}
+      KC_DB: postgres
+      KC_DB_URL: jdbc:postgresql://postgres/keycloak_db
+      KC_DB_USERNAME: keycloak_db
+      KC_DB_PASSWORD: keycloak_db_user_password
+      KC_HOSTNAME_STRICT: false
+      KC_PROXY_HEADERS: xforwarded
+      
+    ports:
+      - 8080:8080
+    restart: always
+    depends_on:
+      - postgres
+    networks:
+      - keycloak_network
+
+volumes:
+  postgres_data:
+    driver: local
+
+networks:
+  keycloak_network:
+    driver: bridge
